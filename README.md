@@ -4,20 +4,14 @@ Native Android Hi-Fi music player with cassette-style real-time DSP and a liquid
 
 ## Get the Android Studio project
 
-The complete Android Studio project is bundled as a compressed archive split into five binary pieces under `source-bundle/`. The easiest method is to download the repository using **Code → Download ZIP**, extract it, and run the assembly script for your operating system:
+The Android Studio project is bundled as a compressed archive split into five binary pieces under `source-bundle/`. Download this repository using **Code → Download ZIP**, extract it, and run the assembly script:
 
 - **Windows:** double-click `assemble.bat`
 - **Android / Termux / Linux / macOS:** run `sh assemble.sh`
 
-The scripts join the five binary pieces into `retrowave-player.tar.xz` and extract the project folder.
+The scripts join the five pieces into `retrowave-player.tar.xz` and extract the project folder.
 
-You can also download the pieces individually:
-
-- [Part 00](source-bundle/part-00.bin)
-- [Part 01](source-bundle/part-01.bin)
-- [Part 02](source-bundle/part-02.bin)
-- [Part 03](source-bundle/part-03.bin)
-- [Part 04](source-bundle/part-04.bin)
+The original supplied WebGL2 shader is also preserved in the repository at [`retrowave-player/assets/reference/liquid.txt`](retrowave-player/assets/reference/liquid.txt). The app uses a native AGSL adaptation under Android resources; it does not try to execute WebGL2 GLSL directly.
 
 ## Features in the source
 
@@ -27,7 +21,6 @@ You can also download the pieces individually:
 - Live tape-color DSP: saturation/drive, wow, flutter, hiss, crackle, tone roll-off, stereo width, bit reduction, dry/wet and bypass
 - AGSL liquid-glass shader on Android 13+ with a Compose fallback on older versions
 - GitHub Actions workflow for Android CI
-- Adapted AGSL implementation based on the supplied liquid acrylic shader
 
 ## Build requirements
 
