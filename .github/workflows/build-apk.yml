@@ -29,6 +29,9 @@ jobs:
           test -f retrowave-player/gradle.properties
           test -f retrowave-player/app/build.gradle.kts
 
+      - name: Apply source compatibility fixes
+        run: bash apply-ui-fixes.sh retrowave-player
+
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:

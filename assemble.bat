@@ -11,5 +11,7 @@ if errorlevel 1 (
   echo Extraction failed. Install 7-Zip or use a recent Windows tar.
   exit /b 1
 )
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0apply-ui-fixes.ps1" "%~dp0retrowave-player"
+if errorlevel 1 exit /b 1
 echo.
 echo Project extracted to .\retrowave-player
