@@ -8,10 +8,10 @@ if errorlevel 1 (
 )
 tar -xJf retrowave-player.tar.xz
 if errorlevel 1 (
-  echo Extraction failed. Install 7-Zip or use a recent Windows tar.
+  echo Failed to extract source bundle. Use Windows 10/11 tar or install 7-Zip.
   exit /b 1
 )
-powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0apply-ui-fixes.ps1" "%~dp0retrowave-player"
+py -3 "%~dp0apply-project-overlay.py" "%~dp0retrowave-player"
 if errorlevel 1 exit /b 1
 echo.
-echo Project extracted to .\retrowave-player
+echo Project extracted and supplied GLSL overlay applied to .\retrowave-player

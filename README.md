@@ -1,53 +1,59 @@
 # retrowave-player
 
-Native Android Hi-Fi music player with cassette-style real-time DSP and a liquid-acrylic AGSL interface.
+Native Android Hi-Fi music player with real-time cassette DSP and the **actual PMMA acrylic GLSL shader supplied for this project**.
 
-## Get the Android Studio project
+## Download and assemble the Android project
 
-The Android Studio project is bundled as a compressed archive split into five binary pieces under `source-bundle/`. Download this repository using **Code → Download ZIP**, extract it, and run the assembly script:
+1. Open **Code → Download ZIP** and extract the repository.
+2. Run `assemble.bat` on Windows or `sh assemble.sh` on Android/Termux/Linux/macOS.
+3. Open the generated `retrowave-player` folder in Android Studio.
 
-- **Windows:** double-click `assemble.bat`
-- **Android / Termux / Linux / macOS:** run `sh assemble.sh`
+The assembly script reconstructs the Android Studio source archive and applies `android-overlay.zip`. The overlay replaces the older AGSL approximation with the supplied GLSL 300 es vertex and fragment shaders and wires them into the player UI.
 
-The scripts join the five pieces into `retrowave-player.tar.xz`, extract the Android project and apply the small Kotlin compatibility patch used by CI.
+## The shader is actually executed
 
-## Source archive
+The original full shader document remains preserved at `retrowave-player/assets/reference/liquid.txt` inside the reconstructed project.
 
-- [Part 00](source-bundle/part-00.bin)
-- [Part 01](source-bundle/part-01.bin)
-- [Part 02](source-bundle/part-02.bin)
-- [Part 03](source-bundle/part-03.bin)
-- [Part 04](source-bundle/part-04.bin)
+These two shader stages are extracted verbatim from its `vsSource` and `fsSource` template literals:
 
-## Features in the source
+- `app/src/main/assets/shaders/liquid_vertex.glsl`
+- `app/src/main/assets/shaders/liquid_fragment.glsl`
 
-- Kotlin + Jetpack Compose UI
-- Media3 ExoPlayer and background MediaSession playback
-- Local audio import through Android's system picker
-- Live tape-color DSP: saturation/drive, wow, flutter, hiss, crackle, tone roll-off, stereo width, bit reduction, dry/wet and bypass
-- AGSL liquid-glass shader on Android 13+ with a Compose fallback on older versions
-- VU meters, animated transport details and tactile controls
-- Original supplied WebGL2 shader preserved at `retrowave-player/assets/reference/liquid.txt`
+`PmmaShaderView` loads them as Android assets and compiles/links them at runtime with `GLES30.glCompileShader` and `GLES30.glLinkProgram` inside a native `GLSurfaceView`. This is the supplied shader running through OpenGL ES 3.0 on the GPU, not an image, CSS effect or simplified AGSL copy.
+
+The player configures the shader for **Pure PMMA + Studio N8** by default. The original shader's PMMA refraction, chamfered bevel, chromatic dispersion, six-slot ripple ring, finger dent lens, spring-smoothed tilt and procedural metallic/amber background are active on the deck and tape-profile glass panels. Seven visual display modes and five procedural backgrounds remain in the fragment source for future UI controls.
+
+The old `liquid_glass.agsl` file is kept only as a historical reference; the active player panels use the original GLSL through GLES 3.0. Devices must support OpenGL ES 3.0.
+
+## Audio DSP
+
+The visual shader is separate from the audio engine. Audio processing runs on decoded PCM in the Media3 playback path:
+
+- Drive / tape saturation
+- Wow and flutter speed instability
+- Hiss and crackle
+- Tone roll-off
+- Stereo width
+- Bit reduction
+- Dry/Wet mix and bypass
+
+These effects alter audio; the visual shader does not.
 
 ## Build requirements
 
 - Android Studio with Android SDK Platform 36
 - JDK 17+
-- Gradle 8.13-compatible Android Gradle Plugin setup
+- Gradle 8.13
+- An OpenGL ES 3.0-capable Android device for the shader renderer
 
-The source bundle does not include the Gradle wrapper JAR. Open the extracted `retrowave-player` folder in Android Studio, or generate a wrapper with an installed Gradle 8.13:
+Build from the extracted project folder:
 
 ```sh
-gradle wrapper --gradle-version 8.13
 gradle testDebugUnitTest assembleDebug
 ```
 
-The debug APK is produced at `app/build/outputs/apk/debug/app-debug.apk`.
+The debug APK is created at `app/build/outputs/apk/debug/app-debug.apk`. GitHub Actions also builds a debug APK and uploads it as the `retrowave-player-debug-apk` artifact.
 
 ## Status
 
-Early project foundation. The project has a GitHub Actions build workflow that runs unit tests and assembles a debug APK. Audio coloration and shader performance still require validation on real Android devices.
-
-## License
-
-See `LICENSE` inside the extracted source folder.
+The CI build verifies Kotlin compilation, unit tests, APK packaging and artifact upload. The GLES shader is compiled at runtime on the Android device, so visual performance and driver compatibility still need hands-on device validation.
